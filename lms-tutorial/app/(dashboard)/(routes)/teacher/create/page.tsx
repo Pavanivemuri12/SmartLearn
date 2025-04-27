@@ -6,6 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation"; // should be 'next/navigation' not 'next/router'
 
+
+import Link from "next/link"; // missing import for Link
 import {
   Form,
   FormControl,
@@ -40,6 +42,7 @@ const CreatePage = () => {
   const { isSubmitting, isValid } = form.formState;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    console.log(values);
     try {
       const response = await axios.post("/api/courses", values);
       router.push(`/teacher/courses/${response.data.id}`);
@@ -78,6 +81,9 @@ const CreatePage = () => {
                       {...field}
                     />
                   </FormControl>
+                  <FormDescription>
+                    what will you teach in this course?
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -88,6 +94,18 @@ const CreatePage = () => {
             >
               Create
             </Button>
+
+            <div className="flex items-center gap-x-2">
+              <Link href="/">
+              <Button
+              type="button"
+              variant="ghost">
+               cancel </Button></Link>
+              <Button type="submit"
+              disabled={!isValid|| isSubmitting}>
+                  continue
+              </Button>
+            </div>
           </form>
         </Form>
       </div>
