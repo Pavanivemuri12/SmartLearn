@@ -6,7 +6,7 @@ import { LogOut } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
-import { SearchInput } from "@/components/search-input"; // Assuming you have a SearchInput component
+//import { SearchInput } from "@/components/search-input"; // Assuming you have a SearchInput component
 
 export const NavbarRoutes = () => {
     const pathname = usePathname();
@@ -18,7 +18,7 @@ export const NavbarRoutes = () => {
         <>
             {isSearchPage && (
                 <div className="hidden md:block">
-                    <SearchInput />
+                    {/* <SearchInput /> */}
                 </div>
             )}
             <div className="flex gap-x-2 ml-auto">
