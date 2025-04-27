@@ -1,4 +1,4 @@
-import {auth} from "@clerk/nextjs";
+import {auth} from "@clerk/nextjs/server";
 import {db} from "@/lib/db";
 import { NextResponse } from "next/server";
 
@@ -7,7 +7,7 @@ export async function PATCH(
     {params}: {params: {courseId: string}}
 ){
     try{
-         const {userId}=auth();
+         const {userId}=await auth();
         const {courseId} = params;
         const values =await req.json();
        

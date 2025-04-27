@@ -151,7 +151,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "E:\\LMS\\SmartLearn\\lms-tutorial\\lib\\generated\\prisma",
+      "value": "C:\\Users\\Pavani Sri\\Desktop\\SmartLearn\\lms-tutorial\\lib\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -165,7 +165,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "E:\\LMS\\SmartLearn\\lms-tutorial\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\Pavani Sri\\Desktop\\SmartLearn\\lms-tutorial\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -179,11 +179,12 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
         "fromEnvVar": "DATABASE_URL",
-        "value": "postgresql://postgres:796062@localhost:5432/mydb?schema=public"
+        "value": null
       }
     }
   },
