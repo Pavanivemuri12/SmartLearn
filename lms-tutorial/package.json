@@ -9,9 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-<<<<<<< Updated upstream
-    "@prisma/client": "^6.6.0",
-=======
     "@clerk/nextjs": "^6.18.0",
 >>>>>>> Stashed changes
     "@radix-ui/react-slot": "^1.2.0",
