@@ -18,7 +18,7 @@ import {
 
 
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import {cn} from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
 
 interface DescriptionFormProps {
@@ -37,7 +37,7 @@ const formSchema = z.object({
   export const DescriptionForm = ({
     initialData,
     courseId,
-  }: DescriptionFormProps ) => {
+  }: DescriptionFormProps) => {
     const [isEditing,setIsEditing] = useState(false);
     const toggleEdit = () => setIsEditing((current) => !current);
     
@@ -51,7 +51,7 @@ const {isSubmitting, isValid} = form.formState;
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
        try {
         await axios.patch(`/api/courses/${courseId}`, values);
-        toast.success("Course title updated successfully.");
+        toast.success("Course description updated successfully.");
         toggleEdit();
         router.refresh();
     }catch{
@@ -79,9 +79,9 @@ const {isSubmitting, isValid} = form.formState;
           {!isEditing&&(
             <p className={cn(
                 "text-sm mt-2",
-                initialData.description && "text-slate-700 italic"   
+                initialData.description &&"text-slate-700" 
             )}>
-                {initialData.description || "No description provided."}
+                {initialData.description||"No description provided."}
             </p>
           )}
           {isEditing && (
@@ -93,8 +93,11 @@ const {isSubmitting, isValid} = form.formState;
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Textarea disabled={isSubmitting}
-                              placeholder="e.g. 'This course is about...'" {...field} />
+                        <Textarea
+                        disabled={isSubmitting}
+                        placeholder="Enter course description"
+                        {...field}/>
+                       
                       </FormControl>
                       <FormMessage />
                     </FormItem>
