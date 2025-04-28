@@ -20,11 +20,11 @@ import {
 import { Button } from "@/components/ui/button";
 import {cn} from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
-import { Course } from "@prisma/client";
 
 interface DescriptionFormProps {
-  initialData: Course;
-  
+  initialData: {
+    description: string;
+  };
   courseId: string;
 };
 
@@ -44,9 +44,7 @@ const formSchema = z.object({
     const router = useRouter();
     const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
-      defaultValues: {
-        description: initialData?.description || "",
-      },
+      defaultValues: initialData,
     });
 
 const {isSubmitting, isValid} = form.formState;
