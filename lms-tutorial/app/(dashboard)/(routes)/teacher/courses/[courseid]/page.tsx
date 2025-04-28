@@ -1,34 +1,43 @@
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
-import { LayoutDashboard } from "lucide-react";
+import { LayoutDashboard, ListChecks, IndianRupee, File } from "lucide-react"; // added IndianRupee here
 import { IconBadge } from "@/components/icon-badge";
 import { TitleForm } from "./_components/title-form";
 import { DescriptionForm } from "./_components/description-form";
 import { ImageForm } from "./_components/image-form";
+import { CategoryForm } from "./_components/category-form";
+import { PriceForm } from "./_components/price-form";
 
 const CourseIdPage = async ({
-  params
+  params,
 }: {
-  params: { courseId: string }
+  params: { courseId: string };
 }) => {
+  const { courseId } = params;
 
-  const { courseId } = await params;
+  const user = await auth();
 
-  const user = await auth(); 
-  
   if (!user) {
-    return redirect("/"); 
+    return redirect("/");
   }
 
   const course = await db.course.findUnique({
     where: {
-      id: courseId 
-    }
+      id: courseId,
+    },
   });
 
+  const categories = await db.category.findMany({
+    orderBy: {
+      name: "asc",
+    },
+  });
+
+  console.log(categories);
+
   if (!course) {
-    return redirect("/"); 
+    return redirect("/");
   }
 
   const requiredFields = [
@@ -36,12 +45,12 @@ const CourseIdPage = async ({
     course.description,
     course.imageUrl,
     course.price,
-    course.categoryId
+    course.categoryId,
   ];
 
   const totalFields = requiredFields.length;
   const completedFields = requiredFields.filter(Boolean).length;
-  
+
   const completionText = `${completedFields} / ${totalFields}`;
 
   return (
@@ -56,26 +65,73 @@ const CourseIdPage = async ({
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
-      <div className="flex items-center gap-x-2">
-        <IconBadge icon={LayoutDashboard} />
-        
+        <div className="flex items-center gap-x-2">
+          <IconBadge icon={LayoutDashboard} />
           <h2 className="text-xl">Customize your course</h2>
         </div>
+
         <TitleForm
           initialData={course}
           courseId={course.id}
-            />
-        <DescriptionForm 
-        initialData={course}
-        courseId={course.id}
         />
-        <ImageForm 
-        initialData={course}
-        courseId={course.id}
+        <DescriptionForm
+          initialData={course}
+          courseId={course.id}
+        />
+        <ImageForm
+          initialData={course}
+          courseId={course.id}
+        />
+        <CategoryForm
+          initialData={course}
+          courseId={course.id}
+          options={categories.map((category) => ({
+            label: category.name,
+            value: category.id,
+          }))}
         />
       </div>
+
+      <div className="space-y-6 mt-16">
+        <div className="flex items-center gap-x-2">
+          <IconBadge icon={ListChecks} />
+          <h2 className="text-xl">
+            Course chapters
+          </h2>
+        </div>
+        <div>
+          TODO: Chapters
+        </div>
+      </div>
+
+      <div className="mt-16 space-y-6">
+        <div className="flex items-center gap-x-2">
+          <IconBadge icon={IndianRupee} />
+          <h2 className="text-xl">
+            Sell your course
+          </h2>
+        </div>
+        <PriceForm
+          initialData={course}
+          courseId={course.id}
+        />
+      </div>
+      <div>
+      <div className="flex items-center gap-x-2">
+          <IconBadge icon={File} />
+          <h2 className="text-xl">
+            Resources & Attachments
+          </h2>
+        </div>
+        <ImageForm
+          initialData={course}
+          courseId={course.id}
+        />
+
+      </div>
     </div>
+
   );
-}
+};
 
 export default CourseIdPage;
