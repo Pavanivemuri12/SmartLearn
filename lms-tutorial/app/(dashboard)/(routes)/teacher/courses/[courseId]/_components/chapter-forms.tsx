@@ -22,10 +22,10 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 
-import {ChaptersList} from "./chapters-list"
+import { ChaptersList } from "./chapters-list";
 
 interface ChaptersFormProps {
-  initialData: Course & { chapters: Chapter[] }; // fixed typo "chaoters" → "chapters"
+  initialData: Course & { chapters: Chapter[] };
   courseId: string;
 }
 
@@ -38,7 +38,7 @@ export const ChaptersForm = ({
   courseId,
 }: ChaptersFormProps) => {
   const [isCreating, setIsCreating] = useState(false);
-  const [isUpdating, setIsUpdating] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false); // now used
 
   const toggleCreating = () => {
     setIsCreating((current) => !current);
@@ -69,13 +69,13 @@ export const ChaptersForm = ({
     try {
       setIsUpdating(true);
       await axios.post(`/api/courses/${courseId}/chapters/reorder`, {
-        list : updateData,
+        list: updateData,
       });
       toast.success("Chapters reordered.");
       router.refresh();
-    }catch{
+    } catch {
       toast.error("Something went wrong. Please try again.");
-    }finally{
+    } finally {
       setIsUpdating(false);
     }
   };
@@ -84,7 +84,7 @@ export const ChaptersForm = ({
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
         Course chapters
-        <Button onClick={toggleCreating} variant="ghost">
+        <Button onClick={toggleCreating} variant="ghost" disabled={isUpdating}>
           {isCreating ? (
             <>Cancel</>
           ) : (
@@ -107,7 +107,7 @@ export const ChaptersForm = ({
                   <FormControl>
                     <Input
                       disabled={isSubmitting}
-                      placeholder="e.g 'Introduction to the course'" // fixed spelling "Introductio"
+                      placeholder="e.g 'Introduction to the course'"
                       {...field}
                     />
                   </FormControl>
@@ -115,10 +115,7 @@ export const ChaptersForm = ({
                 </FormItem>
               )}
             />
-            <Button
-              disabled={isSubmitting || !isValid}
-              type="submit"
-            >
+            <Button disabled={isSubmitting || !isValid} type="submit">
               Create
             </Button>
           </form>
@@ -134,7 +131,7 @@ export const ChaptersForm = ({
         >
           {!initialData.chapters.length && "No chapters"}
           <ChaptersList
-            onEdit={() => { }}
+            onEdit={() => {}}
             onReorder={onReorder}
             items={initialData.chapters || []}
           />
@@ -142,9 +139,12 @@ export const ChaptersForm = ({
       )}
 
       {!isCreating && (
-        <p className="text-ts text-muted-foreground mt-4">
+        <div className="text-sm text-muted-foreground mt-4">
           Drag and drop to reorder the chapters
-        </p>
+          {isUpdating && (
+            <p className="mt-1 italic text-blue-500">Updating order...</p>
+          )}
+        </div>
       )}
     </div>
   );
