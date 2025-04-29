@@ -8,8 +8,8 @@ import { DescriptionForm } from "./_components/description-form";
 import { ImageForm } from "./_components/image-form";
 import { CategoryForm } from "./_components/category-form";
 import { PriceForm } from "./_components/price-form";
-import { AttachmentForm } from "./_components/chapters-form";
-import { ChaptersForm } from "./_components/attachment-form";
+import { AttachmentForm } from "./_components/attachment-form"
+//import { ChaptersForm } from "./_components/attachment-form";
 
 const CourseIdPage = async ({
   params,
@@ -20,21 +20,21 @@ const CourseIdPage = async ({
 
   const user = await auth();
 
-  if (!user) {
+  if (!user|| !user.userId) {
     return redirect("/");
   }
 
   const course = await db.course.findUnique({
     where: {
-      id: params.courseId,
-      userId
+      id: courseId,
+      userId: user.userId,
     },
     include: {
       chapters: {
         orderBy: {
           position: "asc",
         },
-      }
+      },
     
     attachments: {
         orderBy: {
@@ -116,10 +116,10 @@ const CourseIdPage = async ({
             Course chapters
           </h2>
         </div>
-        <ChaptersForm
+        {/* <ChaptersForm
           initialData={course}
           courseId={course.id}
-        />
+        /> */}
       </div>
 
       <div className="mt-16 space-y-6">
@@ -141,7 +141,7 @@ const CourseIdPage = async ({
             Resources & Attachments
           </h2>
         </div>
-        <ImageForm
+        <AttachmentForm
           initialData={course}
           courseId={course.id}
         />
