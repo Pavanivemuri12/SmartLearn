@@ -22,6 +22,8 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 
+import {ChaptersList} from "./chapters-list"
+
 interface ChaptersFormProps {
   initialData: Course & { chapters: Chapter[] }; // fixed typo "chaoters" → "chapters"
   courseId: string;
@@ -60,6 +62,21 @@ export const ChaptersForm = ({
       router.refresh();
     } catch {
       toast.error("Something went wrong. Please try again.");
+    }
+  };
+
+  const onReorder = async (updateData: { id: string; position: number }[]) => {
+    try {
+      setIsUpdating(true);
+      await axios.post(`/api/courses/${courseId}/chapters/reorder`, {
+        list : updateData,
+      });
+      toast.success("Chapters reordered.");
+      router.refresh();
+    }catch{
+      toast.error("Something went wrong. Please try again.");
+    }finally{
+      setIsUpdating(false);
     }
   };
 
@@ -116,8 +133,9 @@ export const ChaptersForm = ({
           )}
         >
           {!initialData.chapters.length && "No chapters"}
-          <ChapterList
+          <ChaptersList
             onEdit={() => { }}
+            onReorder={onReorder}
             items={initialData.chapters || []}
           />
         </div>
