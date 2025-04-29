@@ -14,7 +14,7 @@ const CourseIdPage = async ({
 }: {
   params: { courseId: string };
 }) => {
-  const { courseId } = params;
+  const { courseId } = await params;
 
   const user = await auth();
 
