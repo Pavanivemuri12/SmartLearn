@@ -18,15 +18,17 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Textarea } from "@/components/ui/textarea";
+//import { Textarea } from "@/components/ui/textarea";
 import { ComboboxDemo } from "@/components/ui/combobox";
 
 interface CategoryFormProps {
   initialData: {
     description: string;
-    options: { label: string; value: string }[];
+    categoryId: string;
+    
   };
   courseId: string;
+  options: { label: string; value: string }[];
 }
 
 const formSchema = z.object({
