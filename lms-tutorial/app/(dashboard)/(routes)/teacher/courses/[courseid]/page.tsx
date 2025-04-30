@@ -101,7 +101,10 @@ const CourseIdPage = async ({
           courseId={course.id}
         />
         <CategoryForm
-          initialData={course}
+          initialData={{
+            description: course.description,
+            categoryId: course.categoryId ?? "", // fallback if null
+          }}
           courseId={course.id}
           options={categories.map((category) => ({
             label: category.name,

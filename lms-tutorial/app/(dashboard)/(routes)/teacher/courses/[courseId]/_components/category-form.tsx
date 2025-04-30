@@ -23,7 +23,7 @@ import { ComboboxDemo } from "@/components/ui/combobox";
 
 interface CategoryFormProps {
   initialData: {
-    description: string;
+    description: string | null;
     categoryId: string;
     
   };
