@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 import { db } from "@/lib/db";
@@ -7,9 +7,13 @@ export async function PATCH(
   { params }: { params: { courseId: string; chapterId: string } }
 ) {
   try {
-    const { userId } = auth();
+    const { userId } = await auth();
     const {isPublished,...values} = await req.json();
 
+    if (isPublished) {
+      console.log("Course is published");
+    }
+    
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
@@ -31,7 +35,7 @@ export async function PATCH(
     const chapter = await db.chapter.update({
       where: {
         id: params.chapterId,
-        couseId: params.courseId,
+        courseId: params.courseId,
       },
       data: {
        ...values
