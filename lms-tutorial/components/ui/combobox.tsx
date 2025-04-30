@@ -64,13 +64,14 @@ export const ComboboxDemo = ({
                                         setOpen(false)
                                     }}
                                 >
-                                    {option.label}
+                                   
                                     <Check
                                         className={cn(
                                             "ml-auto",
                                             value === option.value ? "opacity-100" : "opacity-0"
                                         )}
                                     />
+                                     {option.label}
                                 </CommandItem>
                             ))}
                         </CommandGroup>
