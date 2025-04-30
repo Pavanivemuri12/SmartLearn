@@ -10,6 +10,7 @@ import { CategoryForm } from "./_components/category-form";
 import { PriceForm } from "./_components/price-form";
 import { AttachmentForm } from "./_components/attachment-form"
 //import { ChaptersForm } from "./_components/attachment-form";
+import { ChaptersForm } from "./_components/chapter-forms";
 
 const CourseIdPage = async ({
   params,
@@ -116,10 +117,10 @@ const CourseIdPage = async ({
             Course chapters
           </h2>
         </div>
-        {/* <ChaptersForm
+        <ChaptersForm
           initialData={course}
           courseId={course.id}
-        /> */}
+        />
       </div>
 
       <div className="mt-16 space-y-6">

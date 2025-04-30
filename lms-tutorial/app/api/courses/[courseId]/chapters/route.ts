@@ -7,7 +7,7 @@ export async function POST(
   { params }: { params: { courseId: string } }
 ) {
   try {
-    const { userId } = auth();
+    const { userId } = await auth();
     const { title } = await req.json();
 
     if (!userId) {
@@ -17,7 +17,7 @@ export async function POST(
     const courseOwner = await db.course.findUnique({
       where: {
         id: params.courseId,
-        userid: userId,
+        userId: userId,
       },
     });
 
