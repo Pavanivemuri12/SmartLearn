@@ -1,4 +1,4 @@
-import { createUploadthing, type FileRouter } from "uploadthing/next";
+import { createUploadthing, type FileRouter } from "uploadthing/server";
 import { auth } from "@clerk/nextjs/server";
 
 const f = createUploadthing();
@@ -12,8 +12,9 @@ const handleAuth = async () => {
 export const ourFileRouter = {
   courseImage: f({ image: { maxFileSize: "4MB", maxFileCount: 1 } })
     .middleware(async () => await handleAuth())
-    .onUploadComplete(({  file }) => {
-      console.log("Course Image uploaded:", file.url);
+    .onUploadComplete(({ metadata, file }) => {
+      console.log("Course Image uploaded:", file);
+      console.log("userId",metadata.userId)
     }),
 
   courseAttachment: f(["text", "image", "video", "audio", "pdf"])
