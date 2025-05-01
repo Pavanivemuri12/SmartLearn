@@ -1,4 +1,4 @@
-import {auth} from "@clerk/nextjs";
+import {auth} from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 
@@ -6,13 +6,14 @@ import { db } from "@/lib/db";
 import { ArrowLeft,LayoutDashboard } from "lucide-react";
 import { IconBadge } from "@/components/icon-badge";
 import { ChapterTitleForm } from "./_components/chapter-title-form";
+import { ChapterDescriptionForm } from "./_components/chapter-description-form";
 
 const ChapterIdPage = async ({
     params
   }: {
     params: { courseId: string; chapterId: string }
   }) => {
-    const { userId } = auth();
+    const { userId } = await auth();
   
     if (!userId) {
       return redirect("/");
@@ -80,6 +81,11 @@ const ChapterIdPage = async ({
                        initialData={chapter}
                           courseId={params.courseId}
                             chapterId={params.chapterId}
+                    />
+                    <ChapterDescriptionForm
+                    initialData={chapter}
+                    courseId={params.courseId}
+                    chapterId={params.chapterId}
                     />
                 </div>
              </div>

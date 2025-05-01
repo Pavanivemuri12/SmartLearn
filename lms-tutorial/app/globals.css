@@ -45,6 +45,25 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 }
+/* globals.css or your custom CSS */
+.ProseMirror {
+  outline: none;
+  min-height: 150px;
+  padding: 0.5rem;
+}
+
+.ProseMirror > * + * {
+  margin-top: 0.5em;
+}
+
+.ProseMirror strong {
+  font-weight: bold;
+}
+
+.ProseMirror em {
+  font-style: italic;
+}
+
 
 :root {
   --height: 100%;

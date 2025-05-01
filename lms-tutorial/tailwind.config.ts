@@ -20,7 +20,7 @@ const config: Config = withUt({
       },
     },
   },
-  plugins: [forms, aspectRatio, animate],
+  plugins: [forms, aspectRatio, animate, ],
 })
 
 export default config
