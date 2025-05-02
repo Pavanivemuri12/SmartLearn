@@ -6,8 +6,9 @@ import { ArrowLeft, LayoutDashboard } from "lucide-react";
 import { IconBadge } from "@/components/icon-badge";
 import { ChapterTitleForm } from "./_components/chapter-title-form";
 import { ChapterDescriptionForm } from "./_components/chapter-description-form";
+import { ChapterVideoForm } from "./_components/chapter-video-form";
+import { Video } from "lucide-react";
 
-// This is a Server Component
 const ChapterIdPage = async ({ params }: { params: { courseId: string; chapterId: string } }) => {
   // Fetch the user ID from Clerk authentication
   const { userId } = await auth();
@@ -77,6 +78,17 @@ const ChapterIdPage = async ({ params }: { params: { courseId: string; chapterId
               chapterId={params.chapterId}
             />
           </div>
+        </div>
+        <div>
+          <div className="flex items-center gap-x-2">
+            <IconBadge icon={Video}/>
+            <h2 className="text-xl">Upload a video</h2>
+          </div>
+          <ChapterVideoForm 
+          initialData={chapter}
+          chapterId={params.chapterId}
+          courseId={params.courseId}/>
+          
         </div>
       </div>
     </div>
