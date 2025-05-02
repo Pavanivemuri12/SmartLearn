@@ -2,11 +2,14 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { db } from "@/lib/db";
+import { Banner } from "@/components/ui/banner";
+
 import { ArrowLeft, Eye, LayoutDashboard, Video } from "lucide-react";
 import { IconBadge } from "@/components/icon-badge";
 import { ChapterTitleForm } from "./_components/chapter-title-form";
 import { ChapterDescriptionForm } from "./_components/chapter-description-form";
 import { ChapterAccessForm } from "./_components/chapter-access-form";
+
 
 // This is a Server Component
 const ChapterIdPage = async ({ params }: { params: { courseId: string; chapterId: string } }) => {
@@ -40,6 +43,11 @@ const ChapterIdPage = async ({ params }: { params: { courseId: string; chapterId
 
   // Render the page
   return (
+    <>
+    {!chapter.isPublished &&(
+      <Banner
+      />
+    )}
     <div className="p-6">
       <div className="flex items-center justify-between">
         <div className="w-full">
@@ -102,6 +110,7 @@ const ChapterIdPage = async ({ params }: { params: { courseId: string; chapterId
         </div>
       </div>
     </div>
+    </>
   );
 };
 
