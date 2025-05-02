@@ -35,6 +35,7 @@ export const ChapterActions = ({
                 toast.success("Chapter published");
             }
 
+            router.refresh();
         } catch {
             toast.error("Something went wrong");
         } finally {
