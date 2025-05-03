@@ -12,6 +12,7 @@ import { AttachmentForm } from "./_components/attachment-form"
 //import { ChaptersForm } from "./_components/attachment-form";
 import { ChaptersForm } from "./_components/chapter-forms";
 import { Banner } from "@/components/ui/banner";
+import { Actions } from "./_components/actions";
 
 
 
@@ -79,7 +80,7 @@ const CourseIdPage = async ({
     <>
     {!course.isPublished && (
          <Banner
-               label="course is not published yet"
+               label="course is not published yet. It will not be visible to students."
          />
     )}
     <div className="p-6">
@@ -91,6 +92,11 @@ const CourseIdPage = async ({
           </span>
         </div>
         {/*Add Actions here*/}
+        <Actions
+        disabled={!isComplete}
+        courseId={params.courseId}
+        isPublished={course.isPublished}
+        />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
