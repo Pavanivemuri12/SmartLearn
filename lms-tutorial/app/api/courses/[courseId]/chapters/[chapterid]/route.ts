@@ -12,11 +12,13 @@ const mux = new Mux({
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { courseId: string; chapterid: string } }
+  context: { params: { courseId: string; chapterId: string } }
 ) {
   try {
     const { userId } = await auth();
     const { isPublished, ...values } = await req.json();
+
+    const { courseId, chapterId } = context.params;
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -24,7 +26,7 @@ export async function PATCH(
 
     const ownCourse = await db.course.findFirst({
       where: {
-        id: params.courseId,
+        id: courseId,
         userId,
       },
     });
@@ -35,8 +37,8 @@ export async function PATCH(
 
     const chapter = await db.chapter.update({
       where: {
-        id: params.chapterid,
-        courseId: params.courseId,
+        id: chapterId,
+        courseId: courseId,
       },
       data: {
         ...values,
@@ -47,7 +49,7 @@ export async function PATCH(
     if (values.videoUrl) {
       const existingMuxData = await db.muxData.findFirst({
         where: {
-          chapterId: params.chapterid,
+          chapterId: chapterId,
         },
       });
 
@@ -60,15 +62,28 @@ export async function PATCH(
         });
       }
 
+      // Create video asset using the video URL
       const asset = await mux.video.assets.create({
         inputs: [{ url: values.videoUrl }],
         playback_policy: ["public"],
         test: false,
       });
 
+      // Check if the asset is ready (polling approach)
+      let assetStatus = asset.status;
+
+      // Poll until the asset is ready
+      while (assetStatus !== "ready") {
+        console.log(`Waiting for asset ${asset.id} to be ready...`);
+        await new Promise((resolve) => setTimeout(resolve, 2000)); // 2 seconds delay
+        // Check asset status manually (this assumes `status` is available directly)
+        const updatedAsset = await mux.video.assets.get(asset.id); // Using asset ID
+        assetStatus = updatedAsset.status;
+      }
+
       await db.muxData.create({
         data: {
-          chapterId: params.chapterid,
+          chapterId: chapterId,
           assetId: asset.id,
           playbackId: asset.playback_ids?.[0]?.id,
         },

@@ -3,7 +3,7 @@ import * as z from "zod";
 import axios from "axios";
 import MuxPlayer from "@mux/mux-player-react";
 import { Pencil, PlusCircle, Video } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { Chapter, MuxData } from "@prisma/client";
@@ -17,11 +17,6 @@ interface ChapterVideoFormProps {
   chapterid: string;
 }
 
-// Assuming FileUpload component returns a file with ufsUrl property
-// interface FileWithUfsUrl {
-//   ufsUrl: string;
-// }
-
 const formSchema = z.object({
   videoUrl: z.string().min(1, {
     message: "Video URL is required",
@@ -34,6 +29,7 @@ export const ChapterVideoForm = ({
   chapterid,
 }: ChapterVideoFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [isClient, setIsClient] = useState(false); // To ensure client-side rendering
   const router = useRouter();
 
   const toggleEdit = () => setIsEditing((current) => !current);
@@ -50,6 +46,11 @@ export const ChapterVideoForm = ({
       toast.error("Something went wrong. Please try again.");
     }
   };
+
+  // Use useEffect to make sure MuxPlayer is only rendered on the client
+  useEffect(() => {
+    setIsClient(true); // Set to true once the component has mounted on the client
+  }, []);
 
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
@@ -78,9 +79,11 @@ export const ChapterVideoForm = ({
             <Video className="h-10 w-10 text-slate-500" />
           </div>
         ) : (
-          <div className="relative aspect-video mt-2">
-            <MuxPlayer playbackId={initialData?.muxData?.playbackId || ""} />
-          </div>
+          isClient && ( // Check if it's client-side
+            <div className="relative aspect-video mt-2">
+              <MuxPlayer playbackId={initialData?.muxData?.playbackId || ""} />
+            </div>
+          )
         )
       )}
 
