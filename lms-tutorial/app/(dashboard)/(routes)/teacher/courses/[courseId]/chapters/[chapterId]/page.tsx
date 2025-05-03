@@ -20,7 +20,7 @@ const ChapterIdPage = async ({ params }: { params: { courseId: string; chapterId
   if (!userId) {
     return redirect("/");
   }
-//aa
+
   const chapter = await db.chapter.findFirst({
     where: {
       id: params.chapterId,

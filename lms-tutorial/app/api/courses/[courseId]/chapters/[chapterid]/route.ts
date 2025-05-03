@@ -18,6 +18,7 @@ export async function PATCH(
     const { userId } = await auth();
     const { isPublished, ...values } = await req.json();
 
+    
     const { courseId, chapterId } = context.params;
 
     if (!userId) {
@@ -62,24 +63,11 @@ export async function PATCH(
         });
       }
 
-      // Create video asset using the video URL
       const asset = await mux.video.assets.create({
         inputs: [{ url: values.videoUrl }],
         playback_policy: ["public"],
         test: false,
       });
-
-      // Check if the asset is ready (polling approach)
-      let assetStatus = asset.status;
-
-      // Poll until the asset is ready
-      while (assetStatus !== "ready") {
-        console.log(`Waiting for asset ${asset.id} to be ready...`);
-        await new Promise((resolve) => setTimeout(resolve, 2000)); // 2 seconds delay
-        // Check asset status manually (this assumes `status` is available directly)
-        const updatedAsset = await mux.video.assets.get(asset.id); // Using asset ID
-        assetStatus = updatedAsset.status;
-      }
 
       await db.muxData.create({
         data: {

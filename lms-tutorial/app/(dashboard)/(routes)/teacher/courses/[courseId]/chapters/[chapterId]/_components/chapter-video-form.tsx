@@ -29,7 +29,8 @@ export const ChapterVideoForm = ({
   chapterid,
 }: ChapterVideoFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [isClient, setIsClient] = useState(false); // To ensure client-side rendering
+  const [isClient, setIsClient] = useState(false);
+  const [isPlayable, setIsPlayable] = useState(false);
   const router = useRouter();
 
   const toggleEdit = () => setIsEditing((current) => !current);
@@ -47,10 +48,37 @@ export const ChapterVideoForm = ({
     }
   };
 
-  // Use useEffect to make sure MuxPlayer is only rendered on the client
   useEffect(() => {
-    setIsClient(true); // Set to true once the component has mounted on the client
+    setIsClient(true);
   }, []);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+
+    const checkMuxStatus = async () => {
+      if (!initialData?.muxData?.playbackId) return;
+
+      try {
+        const res = await fetch(`https://stream.mux.com/${initialData.muxData.playbackId}.m3u8`, {
+          method: "HEAD",
+        });
+
+        if (res.ok) {
+          setIsPlayable(true);
+          clearInterval(interval);
+        }
+      } catch (error) {
+        console.log(error)
+        console.log("Checking Mux playback availability...");
+      }
+    };
+
+    if (initialData?.muxData?.playbackId) {
+      interval = setInterval(checkMuxStatus, 3000);
+    }
+
+    return () => clearInterval(interval);
+  }, [initialData?.muxData?.playbackId]);
 
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
@@ -79,9 +107,15 @@ export const ChapterVideoForm = ({
             <Video className="h-10 w-10 text-slate-500" />
           </div>
         ) : (
-          isClient && ( // Check if it's client-side
+          isClient && (
             <div className="relative aspect-video mt-2">
-              <MuxPlayer playbackId={initialData?.muxData?.playbackId || ""} />
+              {isPlayable ? (
+                <MuxPlayer playbackId={initialData?.muxData?.playbackId || ""} />
+              ) : (
+                <div className="flex items-center justify-center h-full bg-slate-200 rounded-md">
+                  <p className="text-sm text-muted-foreground">Processing video... please wait</p>
+                </div>
+              )}
             </div>
           )
         )
@@ -92,7 +126,6 @@ export const ChapterVideoForm = ({
           <FileUpload
             endpoint="chapterVideo"
             onChange={(url?: string) => {
-              // Directly pass the ufsUrl as the url parameter
               if (url) {
                 onSubmit({ videoUrl: url });
               }
