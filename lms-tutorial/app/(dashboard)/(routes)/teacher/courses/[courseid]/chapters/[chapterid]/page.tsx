@@ -7,39 +7,34 @@ import { IconBadge } from "@/components/icon-badge";
 import { ChapterTitleForm } from "./_components/chapter-title-form";
 import { ChapterDescriptionForm } from "./_components/chapter-description-form";
 import { ChapterVideoForm } from "./_components/chapter-video-form";
-//import { Video} from "lucide-react";
 import { ChapterAccessForm } from "./_components/chapter-access-form";
 
-const ChapterIdPage = async ({ params }: { params: { courseId: string; chapterId: string } }) => {
-  // Fetch the user ID from Clerk authentication
+const ChapterIdPage = async ({ params }: { params: { courseId: string; chapterid: string } }) => {
   const { userId } = await auth();
+
   if (!userId) {
-    return redirect("/"); // If user is not authenticated, redirect
+    return redirect("/");
   }
 
-  // Fetch chapter data from the database
-  const chapter = await db.chapter.findUnique({
+  const chapter = await db.chapter.findFirst({
     where: {
-      id: params.chapterId, // params.chapterId is used directly
-      courseId: params.courseId, // params.courseId is used directly
+      id: params.chapterid,
+      courseId: params.courseId,
     },
     include: {
-      muxData: true, // Include muxData related to the chapter
+      muxData: true,
     },
   });
 
-  // If the chapter is not found, redirect
   if (!chapter) {
     return redirect("/");
   }
 
-  // Compute progress on the chapter fields
   const requiredFields = [chapter.title, chapter.description, chapter.videoUrl];
   const totalFields = requiredFields.length;
   const completedFields = requiredFields.filter(Boolean).length;
   const completionText = `${completedFields}/${totalFields}`;
 
-  // Render the page
   return (
     <div className="p-6">
       <div className="flex items-center justify-between">
@@ -71,46 +66,36 @@ const ChapterIdPage = async ({ params }: { params: { courseId: string; chapterId
             <ChapterTitleForm
               initialData={chapter}
               courseId={params.courseId}
-              chapterId={params.chapterId}
+              chapterId={params.chapterid}
             />
             <ChapterDescriptionForm
               initialData={chapter}
               courseId={params.courseId}
-              chapterId={params.chapterId}
+              chapterId={params.chapterid}
             />
           </div>
           <div>
             <div className="flex items-center gap-x-2">
-              <IconBadge icon={Eye}/>
-              <h2 className="text-xl">
-                Access Settings
-              </h2>
+              <IconBadge icon={Eye} />
+              <h2 className="text-xl">Access Settings</h2>
             </div>
             <ChapterAccessForm
-            initialData={chapter}
-            courseId={params.courseId}
-            chapterId={params.chapterId}
+              initialData={chapter}
+              courseId={params.courseId}
+              chapterId={params.chapterid}
             />
           </div>
         </div>
         <div>
           <div className="flex items-center gap-x-2">
-            <IconBadge icon={Video}/>
-            <h2 className="text-xl">
-              Add a video
-            </h2>
-          </div>
-        </div>
-        <div>
-          <div className="flex items-center gap-x-2">
-            <IconBadge icon={Video}/>
+            <IconBadge icon={Video} />
             <h2 className="text-xl">Upload a video</h2>
           </div>
-          <ChapterVideoForm 
-          initialData={chapter}
-          chapterId={params.chapterId}
-          courseId={params.courseId}/>
-          
+          <ChapterVideoForm
+            initialData={chapter}
+            chapterid={params.chapterid}
+            courseId={params.courseId}
+          />
         </div>
       </div>
     </div>

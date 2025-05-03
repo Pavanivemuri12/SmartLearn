@@ -1,28 +1,27 @@
-"use client";  // Make sure this stays at the top
+"use client";
 
 import { UploadDropzone } from "@uploadthing/react";
 import { ourFileRouter } from "@/app/api/uploadthing/core";
 import { toast } from "react-hot-toast";
 
-// Define your FileUpload component and use `OurFileRouter` type for the endpoint
 interface FileUploadProps {
   onChange: (url?: string) => void;
-  endpoint: keyof typeof ourFileRouter;  // Using the type of ourFileRouter here
+  endpoint: keyof typeof ourFileRouter;
 }
 
 export const FileUpload = ({ onChange, endpoint }: FileUploadProps) => {
   return (
-    <UploadDropzone<typeof ourFileRouter, typeof endpoint>  // Passing the type here
+    <UploadDropzone<typeof ourFileRouter, typeof endpoint>
       endpoint={endpoint}
-      onClientUploadComplete={(res: { url: string }[] | undefined) => {
+      onClientUploadComplete={(res: { ufsUrl: string }[] | undefined) => {
         if (res && res.length > 0) {
-          onChange(res[0].url);  // Get the URL from the response
+          onChange(res[0].ufsUrl); // ✅ use ufsUrl instead of deprecated url
         } else {
           toast.error("No file uploaded.");
         }
       }}
       onUploadError={(error: Error) => {
-        toast.error(`${error?.message}`);  // Display upload error
+        toast.error(`${error?.message}`);
       }}
     />
   );
