@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
 import { LayoutDashboard, ListChecks, IndianRupee, File } from "lucide-react"; 
 import { IconBadge } from "@/components/icon-badge";
-import { TitleForm } from "./_components/title-form";
+import { TitleForm } from "./_components/chapter-title-form";
 import { DescriptionForm } from "./_components/description-form";
 import { ImageForm } from "./_components/image-form";
 import { CategoryForm } from "./_components/category-form";
