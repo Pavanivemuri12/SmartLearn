@@ -9,7 +9,9 @@ import {
   SignedOut,
   UserButton,
 } from '@clerk/nextjs';
+import { ConfettiProvider } from '@/components/providers/confetti-provider';
 
+// import {ToastProvider} from "@/components/providers/"
 // Import the Inter font
 const inter = Inter({ subsets: ['latin'] });
 
@@ -36,6 +38,8 @@ export default function RootLayout({
               <UserButton />
             </SignedIn>
           </header>
+          <ConfettiProvider />
+          {/* <ToastProvider /> */}
           {children}
         </body>
       </html>
