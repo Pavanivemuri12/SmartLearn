@@ -14,7 +14,7 @@ import { FileUpload } from "@/components/file-upload";
 interface ChapterVideoFormProps {
   initialData: Chapter & { muxData?: MuxData | null };
   courseId: string;
-  chapterid: string;
+  chapterId: string;
 }
 
 const formSchema = z.object({
@@ -26,7 +26,7 @@ const formSchema = z.object({
 export const ChapterVideoForm = ({
   initialData,
   courseId,
-  chapterid,
+  chapterId,
 }: ChapterVideoFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isClient, setIsClient] = useState(false);
@@ -38,7 +38,7 @@ export const ChapterVideoForm = ({
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       formSchema.parse(values);
-      await axios.patch(`/api/courses/${courseId}/chapters/${chapterid}`, values);
+      await axios.patch(`/api/courses/${courseId}/chapters/${chapterId}`, values);
       toast.success("Chapter updated.");
       toggleEdit();
       router.refresh();

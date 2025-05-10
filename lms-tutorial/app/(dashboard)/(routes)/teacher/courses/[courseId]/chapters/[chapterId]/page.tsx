@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
@@ -13,8 +15,14 @@ import { ChapterAccessForm } from "./_components/chapter-access-form";
 import { ChapterActions } from "./_components/chapter-actions";
 // import { ChapterActions } from "../../_components/chapter-actions";
 
+interface ChapterPageProps {
+  params: {
+    courseId: string;
+    chapterId: string;
+  };
+}
 
-const ChapterIdPage = async ({ params }: { params: { courseId: string; chapterId: string } }) => {
+const ChapterIdPage = async  ({ params }: ChapterPageProps)  => {
   const { userId } = await auth();
 
   if (!userId) {
@@ -69,7 +77,7 @@ const ChapterIdPage = async ({ params }: { params: { courseId: string; chapterId
                 </span>
               </div>
               <ChapterActions
-                disabled={isComplete}
+                disabled={!isComplete}
                 courseId={params.courseId}
                 chapterId={params.chapterId}
                 isPublished={chapter.isPublished}
@@ -139,7 +147,7 @@ const ChapterIdPage = async ({ params }: { params: { courseId: string; chapterId
           </div>
           <ChapterVideoForm
             initialData={chapter}
-            chapterid={params.chapterId}
+            chapterId={params.chapterId}
             courseId={params.courseId}
           />
         </div>

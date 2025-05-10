@@ -99,7 +99,7 @@ export async function PATCH(
     const { userId } = await auth();
     const { isPublished, ...values } = await req.json();
 
-    const { courseId, chapterId } = context.params;
+    const { courseId, chapterId } = await context.params;
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
