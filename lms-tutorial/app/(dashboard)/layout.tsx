@@ -19,7 +19,7 @@ const DashboardLayout = ({
       </div>
 
       {/* Main content */}
-      <main className="md:pl-56 pt-[80px] h-full ml-56">
+      <main className="md:pl-42 pt-[40px] h-full ml-13">
         {children}
       </main>
     </div>
