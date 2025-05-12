@@ -1,69 +1,85 @@
 import { auth } from "@clerk/nextjs/server";
-import {db} from "@/lib/db";
+import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
 import { getProgress } from "@/actions/get-progress";
 import { CourseSidebar } from "./_components/course-sidebar";
+import { CourseNavbar } from "./_components/course-navbar";
 
-
-const CourseLayout = async({
-    children,
-    params
+const CourseLayout = async ({
+  children,
+  params,
 }: {
-    children: React.ReactNode;
-    params: {courseId: string };
+  children: React.ReactNode;
+  params: { courseId: string };
 }) => {
-    const {userId} = await auth();
+  const { userId } = await auth();
 
-    if (!userId){
-        return redirect("/")
-    }
+  if (!userId) {
+    return redirect("/");
+  }
 
-    const course = await db.course.findUnique({
-        where:{
-            id: params.courseId,
+  const course = await db.course.findUnique({
+    where: {
+      id: params.courseId,
+    },
+    include: {
+      chapters: {
+        where: {
+          isPublished: true,
         },
-        include:{
-            chapters:{
-            where:{
-                isPublished: true,
+        include: {
+          userProgress: {
+            where: {
+              userId,
             },
-            include:{
-                userProgress: {
-                    where: {
-                        userId,
-                    }
-                }
-            },
-            orderBy:{
-                position: "asc"
-            }
-        }
+          },
         },
-    })
+        orderBy: {
+          position: "asc",
+        },
+      },
+    },
+  });
 
-    if (!course){
-        return redirect("/");
-    }
+  if (!course) {
+    return redirect("/");
+  }
 
-    const progressCount = await getProgress(userId, course.id);
-    return(
-       <div className="relative h-screen w-full">
-  {/* Sidebar */}
-  <div className="hidden md:flex h-full w-80 flex-col fixed inset-y-0 z-50 bg-gray-200 p-4">
-    <p>Sidebar is working</p>
-    <CourseSidebar
-      course={course}
-      progressCount={progressCount}
-    />
+  const progressCount = await getProgress(userId, course.id);
+
+  return (
+    // <div className="h-full flex">
+    //   {/* Sidebar */}
+    //   <div className="hidden md:flex h-full w-80 flex-col fixed inset-y-0 z-75 bg-white text-black border-r">
+    //     <p className="p-4 font-semibold">Sidebar is working</p>
+    //     <CourseSidebar course={course} progressCount={progressCount} />
+    //   </div>
+
+    //   {/* Main content */}
+    //   <main className="flex-1 md:ml-80 h-full overflow-y-auto">
+    //     {children}
+    //   </main>
+    // </div>
+     <div className="flex fixed top-0 h-full">
+    {/* Sidebar */}
+    <div className="h-[80px] md:pl-80 fixed inset-y-0 w-full z-50">
+        <CourseNavbar
+        course={course}
+        progressCount={progressCount}
+        />
+    </div>
+    <div className="flex w-80 h-full  flex-col inset-y-0 z-50  ">
+     
+         <CourseSidebar course={course} progressCount={progressCount} />
+    </div>
+
+    {/* Main content */}
+    <main className="flex-1 md:pl-80 pt-[80px] h-full ">
+      {children}
+    </main>
   </div>
+);
+  
+};
 
-  {/* Main content */}
-  <main className="h-full md:pl-80">
-    {children}
-  </main>
-</div>
-
-    )
-}
-
-export default CourseLayout
+export default CourseLayout;
