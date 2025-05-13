@@ -1,13 +1,14 @@
 "use client";
-import axios from "axios";
-import MuxPlayer from "@mux/mux-player-react";
-import { useEffect, useState } from "react"; // Added useState import
-import { useRouter } from "next/navigation";
-import { toast } from "@/hooks/use-toast";
-import { Loader2, Lock } from "lucide-react";
 
+import dynamic from "next/dynamic";
+import {  useState } from "react";
+import { Loader2, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useConfettiStore } from "@/hooks/use-confetti-store";
+
+// Dynamically import MuxPlayer to avoid SSR hydration mismatch
+const MuxPlayer = dynamic(() => import("@mux/mux-player-react"), {
+  ssr: false,
+});
 
 interface VideoPlayerProps {
   playbackId: string;
@@ -45,12 +46,15 @@ export const VideoPlayer = ({
       )}
       {!isLocked && (
         <MuxPlayer
+          key={playbackId} // helps React avoid DOM mismatch
+          playbackId={playbackId}
           title={title}
+          autoPlay
           className={cn(!isReady && "hidden")}
           onCanPlay={() => setIsReady(true)}
-          onEnded={() => {}}
-          autoPlay
-          playbackId={playbackId}
+          onEnded={() => {
+            // TODO: handle chapter completion or next step
+          }}
         />
       )}
     </div>
