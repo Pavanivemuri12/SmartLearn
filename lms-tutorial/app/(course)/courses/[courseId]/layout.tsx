@@ -74,7 +74,7 @@ const CourseLayout = async ({
     </div>
 
     {/* Main content */}
-    <main className="flex-1 md:pl-80 pt-[80px] h-full ">
+    <main className="flex-1  pt-[80px] h-full ">
       {children}
     </main>
   </div>

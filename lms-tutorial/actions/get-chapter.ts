@@ -14,10 +14,12 @@ export const getChapter = async ({
 }: GetChapterProps) => {
   try {
     // Corrected compound condition for querying purchase
-    const purchase = await db.purchase.findFirst({
+    const purchase = await db.purchase.findUnique({
       where: {
-        userId: userId,
-        courseId: courseId,
+        userId_courseId:{
+          userId,
+          courseId
+        } 
       },
     });
 
@@ -52,6 +54,7 @@ export const getChapter = async ({
           courseId: courseId,
         },
       });
+    }
 
       if (chapter.isFree || purchase) {
         muxData = await db.muxData.findUnique({
@@ -92,7 +95,7 @@ export const getChapter = async ({
         userProgress,
         purchase,
       };
-    }
+    
   } catch (error) {
     console.log("[GET_CHAPTER]", error);
     return {
