@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { useState } from "react";
 import { Loader2, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useConfettiStore } from "@/hooks/use-confetti-store";  
 import { toast } from "react-hot-toast";
 // Dynamically import MuxPlayer to avoid SSR hydration mismatch
@@ -47,7 +47,7 @@ export const VideoPlayer = ({
         }
 
         toast.success("progress updated");
-        router.replace(router.asPath);
+        router.refresh();
 
         if (nextChapterId) {
           router.push(`/courses/${courseId}/chapters/${nextChapterId}/progress`);
@@ -72,15 +72,19 @@ export const VideoPlayer = ({
         </div>
       )}
       {!isLocked && (
-        <MuxPlayer
-          key={playbackId} // helps React avoid DOM mismatch
-          playbackId={playbackId}
-          title={title}
-          autoPlay
-          className={cn(!isReady && "hidden")}
-          onCanPlay={() => setIsReady(true)}
-          onEnded={onEnd}
-        />
+       <MuxPlayer
+  key={playbackId}
+  playbackId={playbackId}
+  title={title}
+  autoPlay
+  className={cn(!isReady && "hidden")}
+  onCanPlay={() => setIsReady(true)}
+  onEnded={onEnd}
+  onError={(error) => {
+    console.error("Video playback error", error);
+    toast.error("Failed to load video. Please try again later.");
+  }}
+/>
       )}
     </div>
   );

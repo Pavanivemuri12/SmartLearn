@@ -13,16 +13,17 @@ export const getChapter = async ({
   chapterId,
 }: GetChapterProps) => {
   try {
-    // Corrected compound condition for querying purchase
+    // Fetching the purchase status
     const purchase = await db.purchase.findUnique({
       where: {
-        userId_courseId:{
+        userId_courseId: {
           userId,
-          courseId
-        } 
+          courseId,
+        },
       },
     });
 
+    // Fetching course details
     const course = await db.course.findUnique({
       where: {
         isPublished: true,
@@ -33,6 +34,7 @@ export const getChapter = async ({
       },
     });
 
+    // Fetching chapter details
     const chapter = await db.chapter.findUnique({
       where: {
         id: chapterId,
@@ -41,13 +43,23 @@ export const getChapter = async ({
     });
 
     if (!chapter || !course) {
-      throw new Error("Chapter not found");
+      return {
+        chapter: null,
+        course: null,
+        muxData: null,
+        attachments: [],
+        nextChapter: null,
+        userProgress: null,
+        purchase: null,
+        error: "Chapter or course not found",
+      };
     }
 
     let muxData = null;
     let attachments: Attachment[] = [];
     let nextChapter: Chapter | null = null;
 
+    // If the user has purchased the course, fetch attachments
     if (purchase) {
       attachments = await db.attachment.findMany({
         where: {
@@ -56,45 +68,48 @@ export const getChapter = async ({
       });
     }
 
-      if (chapter.isFree || purchase) {
-        muxData = await db.muxData.findUnique({
-          where: {
-            chapterId: chapter.id,
-          },
-        });
-
-        nextChapter = await db.chapter.findFirst({
-          where: {
-            courseId: courseId,
-            isPublished: true,
-            position: {
-              gt: chapter?.position,
-            },
-          },
-          orderBy: {
-            position: "asc",
-          },
-        });
-      }
-
-      const userProgress = await db.userProgress.findUnique({
+    // Fetch mux data for free chapters or purchased chapters
+    if (chapter.isFree || purchase) {
+      muxData = await db.muxData.findUnique({
         where: {
-          userId_chapterId: {
-            userId,
-            chapterId,
-          },
+          chapterId: chapter.id,
         },
       });
 
-      return {
-        chapter,
-        course,
-        muxData,
-        attachments,
-        nextChapter,
-        userProgress,
-        purchase,
-      };
+      nextChapter = await db.chapter.findFirst({
+        where: {
+          courseId: courseId,
+          isPublished: true,
+          position: {
+            gt: chapter?.position,
+          },
+        },
+        orderBy: {
+          position: "asc",
+        },
+      });
+    }
+
+    // Fetching user progress for the current chapter
+    const userProgress = await db.userProgress.findUnique({
+      where: {
+        userId_chapterId: {
+          userId,
+          chapterId,
+        },
+      },
+    });
+
+    return {
+      chapter,
+      course,
+      muxData,
+      attachments,
+      nextChapter,
+      userProgress,
+      purchase,
+      error: null,  // No errors
+    };
     
   } catch (error) {
     console.log("[GET_CHAPTER]", error);
@@ -106,6 +121,7 @@ export const getChapter = async ({
       nextChapter: null,
       userProgress: null,
       purchase: null,
+      error: "Internal server error",
     };
   }
 };
