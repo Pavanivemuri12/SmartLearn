@@ -9,7 +9,7 @@
     "lint": "next lint",
     "stripe": "stripe listen --forward-to localhost:3000/api/webhook",
     "seed": "ts-node --loader ts-node/esm scripts/seed.ts",
-    "postinstall":"prisma generate"
+    "postinstall": "prisma generate && prisma db push && prisma db seed"
   },
   "type": "module",
   "dependencies": {
