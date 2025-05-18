@@ -25,7 +25,7 @@ export default [
       "@typescript-eslint/no-empty-object-type": [
         "warn",
         {
-          allowObjectTypes: false,
+          allowObjectTypes: "true",
         },
       ],
       "@typescript-eslint/no-explicit-any": "warn",
