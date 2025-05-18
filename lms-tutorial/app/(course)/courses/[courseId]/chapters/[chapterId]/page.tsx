@@ -8,17 +8,16 @@ import { Separator } from "@/components/ui/separator";
 
 import { File } from "lucide-react";
 import { Preview } from "@/components/preview";
-import { CourseProgress } from "@/components/ui/course-progress";
 import { CourseProgressButton } from "./_components/course-progress-button";
 
 type PageProps = {
-  params: {
-    courseId: string;
-    chapterId: string;
-  };
+  params: { courseId: string; chapterId: string } | Promise<{ courseId: string; chapterId: string }>;
 };
 
 const ChapterIdPage = async ({ params }: PageProps) => {
+  // Await params if it is a Promise
+  const { courseId, chapterId } = params instanceof Promise ? await params : params;
+
   const { userId } = await auth();
 
   if (!userId) {
@@ -35,8 +34,8 @@ const ChapterIdPage = async ({ params }: PageProps) => {
     userProgress,
   } = await getChapter({
     userId,
-    chapterId: params.chapterId,
-    courseId: params.courseId,
+    chapterId,
+    courseId,
   });
 
   if (!chapter || !course) {
@@ -64,9 +63,9 @@ const ChapterIdPage = async ({ params }: PageProps) => {
           <div className="aspect-video w-[700px] h-[400px]">
             {muxData?.playbackId && (
               <VideoPlayer
-                chapterId={params.chapterId}
+                chapterId={chapterId}
                 title={chapter.title}
-                courseId={params.courseId}
+                courseId={courseId}
                 nextChapterId={nextChapter?.id}
                 playbackId={muxData?.playbackId}
                 isLocked={isLocked}
@@ -82,14 +81,14 @@ const ChapterIdPage = async ({ params }: PageProps) => {
             <div className="flex flex-col md:flex-row items-center justify-between gap-4 mt-4">
               {purchase ? (
                 <CourseProgressButton
-                  chapterId={params.chapterId}
-                  courseId={params.courseId}
+                  chapterId={chapterId}
+                  courseId={courseId}
                   nextChapterId={nextChapter?.id}
                   isCompleted={!!userProgress?.isCompleted}
                 />
               ) : (
                 <CourseEnrollButton
-                  courseId={params.courseId}
+                  courseId={courseId}
                   price={course.price!}
                 />
               )}
