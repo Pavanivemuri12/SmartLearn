@@ -10,7 +10,7 @@ import { File } from "lucide-react";
 import { Preview } from "@/components/preview";
 import { CourseProgressButton } from "./_components/course-progress-button";
 
-// IMPORTANT: Do NOT use Promise<> in params type; Next.js expects params as a plain object
+// Define props with plain object params (NO Promise)
 type PageProps = {
   params: {
     courseId: string;
@@ -19,7 +19,6 @@ type PageProps = {
 };
 
 const ChapterIdPage = async ({ params }: PageProps) => {
-  // Destructure params directly
   const { courseId, chapterId } = params;
 
   const { userId } = await auth();
