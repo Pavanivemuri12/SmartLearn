@@ -20,22 +20,19 @@ const eslintConfig = [
       },
     },
     rules: {
-      // Fix no-empty-object-type issue with correct option key
       "@typescript-eslint/no-empty-object-type": [
         "warn",
-        { allowObjectTypes: true }
+        { allowObjectTypes: true },
       ],
 
-      // Warn (not error) on using `any`
       "@typescript-eslint/no-explicit-any": "warn",
 
-      // Allow unused variables if prefixed with _
       "@typescript-eslint/no-unused-vars": [
         "warn",
         {
           varsIgnorePattern: "^_",
           argsIgnorePattern: "^_",
-        }
+        },
       ],
     },
   },
