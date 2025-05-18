@@ -10,13 +10,17 @@ import { File } from "lucide-react";
 import { Preview } from "@/components/preview";
 import { CourseProgressButton } from "./_components/course-progress-button";
 
+// IMPORTANT: Do NOT use Promise<> in params type; Next.js expects params as a plain object
 type PageProps = {
-  params: { courseId: string; chapterId: string } | Promise<{ courseId: string; chapterId: string }>;
+  params: {
+    courseId: string;
+    chapterId: string;
+  };
 };
 
 const ChapterIdPage = async ({ params }: PageProps) => {
-  // Await params if it is a Promise
-  const { courseId, chapterId } = params instanceof Promise ? await params : params;
+  // Destructure params directly
+  const { courseId, chapterId } = params;
 
   const { userId } = await auth();
 
@@ -112,6 +116,7 @@ const ChapterIdPage = async ({ params }: PageProps) => {
                   target="_blank"
                   key={attachment.id}
                   className="flex items-center p-3 bg-sky-200 border text-sky-700 rounded-md hover:underline gap-2"
+                  rel="noopener noreferrer"
                 >
                   <File className="h-5 w-5" />
                   <p className="line-clamp-1">{attachment.name}</p>
