@@ -9,24 +9,26 @@ const compat = new FlatCompat({
   baseDirectory: __dirname,
 });
 
-const eslintConfig = [
+export default [
+  // Import legacy ESLint configs
   ...compat.extends("next/core-web-vitals", "next/typescript"),
 
+  // Now define your custom rules
   {
     files: ["**/*.ts", "**/*.tsx"],
     languageOptions: {
       parserOptions: {
-        project: "./tsconfig.json", // for type-aware linting
+        project: "./tsconfig.json",
       },
     },
     rules: {
       "@typescript-eslint/no-empty-object-type": [
         "warn",
-        { allowObjectTypes: true },
+        {
+          allowObjectTypes: true,
+        },
       ],
-
       "@typescript-eslint/no-explicit-any": "warn",
-
       "@typescript-eslint/no-unused-vars": [
         "warn",
         {
@@ -37,5 +39,3 @@ const eslintConfig = [
     },
   },
 ];
-
-export default eslintConfig;
