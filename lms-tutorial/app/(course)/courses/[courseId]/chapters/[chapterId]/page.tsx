@@ -11,11 +11,14 @@ import { Preview } from "@/components/preview";
 import { CourseProgress } from "@/components/ui/course-progress";
 import { CourseProgressButton } from "./_components/course-progress-button";
 
-const ChapterIdPage = async ({
-  params,
-}: {
-  params: { courseId: string; chapterId: string };
-}) => {
+type PageProps = {
+  params: {
+    courseId: string;
+    chapterId: string;
+  };
+};
+
+const ChapterIdPage = async ({ params }: PageProps) => {
   const { userId } = await auth();
 
   if (!userId) {
@@ -73,26 +76,26 @@ const ChapterIdPage = async ({
           </div>
         </div>
 
-        {/* Align chapter title and course price in the same row */}
         <div className="flex items-center justify-between space-x-4 mt-8">
           <h2 className="text-2xl font-semibold flex-1">{chapter.title}</h2>
           <div className="text-lg font-medium text-gray-800">
-              <div className="flex flex-col md:flex-row items-center justify-between gap-4 mt-4">
-          {purchase ? (
-            <CourseProgressButton
-            chapterId={params.chapterId}
-            courseId={params.courseId}
-            nextChapterId={nextChapter?.id}
-            isCompleted={!!userProgress?.isCompleted}/>
-            
-          ) : (
-            <CourseEnrollButton courseId={params.courseId} price={course.price!} />
-          )}
-        </div>
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4 mt-4">
+              {purchase ? (
+                <CourseProgressButton
+                  chapterId={params.chapterId}
+                  courseId={params.courseId}
+                  nextChapterId={nextChapter?.id}
+                  isCompleted={!!userProgress?.isCompleted}
+                />
+              ) : (
+                <CourseEnrollButton
+                  courseId={params.courseId}
+                  price={course.price!}
+                />
+              )}
+            </div>
           </div>
         </div>
-
-      
 
         <Separator />
 
