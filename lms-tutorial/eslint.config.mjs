@@ -11,18 +11,32 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
-  
+
   {
     files: ["**/*.ts", "**/*.tsx"],
+    languageOptions: {
+      parserOptions: {
+        project: "./tsconfig.json", // for type-aware linting
+      },
+    },
     rules: {
-      // Allow object types using `object` instead of `{}`
-      "@typescript-eslint/no-empty-object-type": ["warn", { allowObjectTypes: true }],
-      
-      // Optional: warn instead of error for using `any`
+      // ✅ Fix no-empty-object-type issue (use correct key)
+      "@typescript-eslint/no-empty-object-type": [
+        "warn",
+        { allowObject: true }
+      ],
+
+      // ✅ Warn (not error) on using `any`
       "@typescript-eslint/no-explicit-any": "warn",
 
-      // Optional: allow `{} = {}` in generic places like reducers etc.
-      // "@typescript-eslint/ban-types": ["warn", { types: { "{}": false } }],
+      // ✅ Allow unused variables if prefixed with _
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          varsIgnorePattern: "^_",
+          argsIgnorePattern: "^_",
+        }
+      ],
     },
   },
 ];
